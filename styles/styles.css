@@ -1,0 +1,12 @@
+
+.Techsimpleict{
+    display: flex;
+    justify-content: center;
+    border: 5px solid red;
+    background-color:green;
+    
+}
+.Techsimpleict h2{
+    font-size: 48px;
+    text-align: center;
+}
