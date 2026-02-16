@@ -1,12 +1,20 @@
 
 .Techsimpleict{
-    display: flex;
-    justify-content: center;
-    border: 5px solid red;
+    border: 2px solid red;
     background-color:green;
     
 }
 .Techsimpleict h2{
     font-size: 48px;
     text-align: center;
+    color: aliceblue;
+}
+.Techsimpleict span{
+    color: red;
+}
+.Techsimpleict p{
+    font-size: 20px;
+    text-align: center;
+    color: aliceblue;
+
 }
