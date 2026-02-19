@@ -1,15 +1,222 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Techsimpleict.com</title>
-    <link rel="stylesheet" href="styles/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Training Admin Panel</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-    <div class="Techsimpleict">
-        <h2>Techsimpleict.<span>com</span></h2>
-        <p>It is a IT SOLUTION Company.</p>
-    </div>
+<div class="layout">
+  <div class="sidebar">
+    <h2>TechSimple Admin</h2>
+    <nav>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#training">Trainings</a>
+      <a href="#offers">Offers</a>
+      <a href="#registrations">Registrations</a>
+    </nav>
+  </div>
+
+  <main class="main">
+    <header id="dashboard">
+      <h1>Training Management Admin Panel</h1>
+      <p>Control center for programs and participants — :contentReference[oaicite:0]{index=0}</p>
+    </header>
+
+    <section class="stats">
+
+      <div class="card">
+        <h3>Trainings</h3>
+        <p>12</p>
+      </div>
+      <div class="card">
+        <h3>Active Offers</h3>
+        <p>3</p>
+      </div>
+      <div class="card">
+        <h3>Registrations</h3>
+        <p>24</p>
+      </div>
+
+    </section>
+
+    <section id="training" class="panel">
+      <div class="panel-header">
+        <h2>Training Management</h2>
+        <button class="btn">Add Training</button>
+      </div>
+
+      <div class="card-info">
+
+
+        <form class="card-1">
+          <h3>Training Details</h3>
+
+          <label class="card-1">Title</label>
+          <input type="text" placeholder="Full Stack Bootcamp">
+
+          <label class="card-1">Code</label>
+          <input type="text" placeholder="TS-001">
+
+          <label class="card-1">Category</label>
+          <select>
+            <option>Certification</option>
+            <option>Professional</option>
+            <option>Corporate</option>
+          </select>
+
+          <label class="card-1">Fee (BDT)</label>
+          <input type="number">
+
+          <label class="card-1">Start Date</label>
+          <input type="date">
+
+          <label class="card-1">Deadline</label>
+          <input type="date">
+
+          <label class="card-1">Status</label>
+          <select>
+            <option>Upcoming</option>
+            <option>Ongoing</option>
+            <option>Closed</option>
+          </select>
+
+          <label class="card-1">Instructor</label>
+          <input type="text">
+
+          <label class="card-1">Description</label>
+          <textarea rows="3"></textarea>
+
+          <button class="btn" type="submit">Save</button>
+        </form>
+
+        <div class="card-info-1">
+          <h3>Training List</h3>
+          <input type="search" placeholder="Search training">
+          <button class="search ">Search</button>
+
+          <table class="training-table">
+            <thead class="table-header">
+            <tr>
+              <th>Title</th>
+              <th>Code</th>
+              <th>Fee</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+            </thead>
+
+            <tbody class="table-body">
+            <tr>
+              <td>Full Stack Bootcamp</td>
+              <td>TS-001</td>
+              <td>15,000</td>
+              <td>Upcoming</td>
+              <td>
+                <button class="btn">Edit</button>
+                <button class="btn">Delete</button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>UI/UX Design</td>
+              <td>TS-002</td>
+              <td>12,000</td>
+              <td>Ongoing</td>
+              <td>
+                <button class="btn">Edit</button>
+                <button class="btn">Delete</button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+
+    <section id="offers" class="panel-1">
+      <div class="panel-header">
+        <h2>Offers & Discounts</h2>
+        <button class="btn">Create Offer</button>
+      </div>
+
+      <div class="offer-info-card">
+        <h3>Offer Form</h3>
+
+        <label>Offer Name</label>
+        <input type="text" placeholder="New Year Discount">
+
+        <label>Training</label>
+        <select>
+          <option>Full Stack Bootcamp</option>
+          <option>UI/UX Design</option>
+        </select>
+
+        <label>Discount Type</label>
+        <select>
+          <option>Percentage</option>
+          <option>Fixed</option>
+        </select>
+
+        <label>Value</label>
+        <input type="number">
+
+        <label>Start Date</label>
+        <input type="date">
+
+        <label>End Date</label>
+        <input type="date">
+
+        <button class="btn">Save Offer</button>
+      </div>
+    </section>
+
+    <section id="registrations" class="panel-2">
+      <div class="panel-header">
+        <h2>Registrations</h2>
+        <button class="btn">Export CSV</button>
+      </div>
+
+      <div class="card">
+        <table class="registration-table">
+          <thead class="table-header">
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Training</th>
+            <th>Date</th>
+          </tr>
+          </thead>
+
+          <tbody>
+          <tr>
+            <td>Rahim</td>
+            <td>rahim@mail.com</td>
+            <td>Full Stack Bootcamp</td>
+            <td>05 Mar 2026</td>
+          </tr>
+
+          <tr>
+            <td>Sabina</td>
+            <td>sabina@mail.com</td>
+            <td>UI/UX Design</td>
+            <td>03 Feb 2026</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+
+    <footer>
+      <p>Dynamic Training Management System</p>
+      <p>© 2026 TechSimple ICT</p>
+    </footer>
+
+  </main>
+</div>
 </body>
 </html>
