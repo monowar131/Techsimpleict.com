@@ -1,222 +1,374 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Training Admin Panel</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .btn-delete {
+      background: #ef4444 !important;
+    }
+
+    .btn-delete:hover {
+      background: #dc2626 !important;
+    }
+  </style>
+  <script>
+    // Simple authentication check
+    if (sessionStorage.getItem('isAdminAuthenticated') !== 'true') {
+      window.location.href = 'login.html';
+    }
+
+    function logout() {
+      sessionStorage.removeItem('isAdminAuthenticated');
+      window.location.href = 'login.html';
+    }
+  </script>
 </head>
 
 <body>
-<div class="layout">
-  <div class="sidebar">
-    <h2>TechSimple Admin</h2>
-    <nav>
-      <a href="#dashboard">Dashboard</a>
-      <a href="#training">Trainings</a>
-      <a href="#offers">Offers</a>
-      <a href="#registrations">Registrations</a>
-    </nav>
-  </div>
+  <div class="layout">
+    <div class="sidebar">
+      <h2>TechSimple Admin</h2>
+      <nav>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#training">Trainings</a>
+        <a href="#offers">Offers</a>
+        <a href="#registrations">Registrations</a>
+        <a href="javascript:void(0)" onclick="logout()" style="margin-top: 1rem; color: #ef4444;">Logout</a>
+        <a href="trainings.html" style="margin-top: 2rem; border: 1px solid #10b981;">View Frontend</a>
+      </nav>
+    </div>
 
-  <main class="main">
-    <header id="dashboard">
-      <h1>Training Management Admin Panel</h1>
-      <p>Control center for programs and participants — :contentReference[oaicite:0]{index=0}</p>
-    </header>
+    <main class="main">
+      <header id="dashboard">
+        <h1>Training Management Admin Panel</h1>
+        <p>Control center for programs and participants</p>
+      </header>
 
-    <section class="stats">
+      <section class="stats">
+        <div class="card">
+          <h3>Trainings</h3>
+          <p id="statTrainings">0</p>
+        </div>
+        <div class="card">
+          <h3>Active Offers</h3>
+          <p id="statOffers">0</p>
+        </div>
+        <div class="card">
+          <h3>Registrations</h3>
+          <p id="statRegs">0</p>
+        </div>
+      </section>
 
-      <div class="card">
-        <h3>Trainings</h3>
-        <p>12</p>
-      </div>
-      <div class="card">
-        <h3>Active Offers</h3>
-        <p>3</p>
-      </div>
-      <div class="card">
-        <h3>Registrations</h3>
-        <p>24</p>
-      </div>
+      <section id="training" class="panel">
+        <div class="panel-header">
+          <h2>Training Management</h2>
+        </div>
 
-    </section>
+        <div class="card-info">
+          <form id="trainingForm" class="card-1">
+            <h3>Training Details</h3>
+            <input type="hidden" id="editTrainingId">
 
-    <section id="training" class="panel">
-      <div class="panel-header">
-        <h2>Training Management</h2>
-        <button class="btn">Add Training</button>
-      </div>
+            <label>Title</label>
+            <input type="text" id="tTitle" required placeholder="Full Stack Bootcamp">
 
-      <div class="card-info">
+            <label>Code</label>
+            <input type="text" id="tCode" required placeholder="TS-001">
 
+            <label>Category</label>
+            <select id="tCategory">
+              <option>Certification</option>
+              <option>Professional</option>
+              <option>Corporate</option>
+            </select>
 
-        <form class="card-1">
-          <h3>Training Details</h3>
+            <label>Fee (BDT)</label>
+            <input type="number" id="tFee" required>
 
-          <label class="card-1">Title</label>
-          <input type="text" placeholder="Full Stack Bootcamp">
+            <label>Start Date</label>
+            <input type="date" id="tStartDate" required>
 
-          <label class="card-1">Code</label>
-          <input type="text" placeholder="TS-001">
+            <label>Deadline</label>
+            <input type="date" id="tDeadline" required>
 
-          <label class="card-1">Category</label>
-          <select>
-            <option>Certification</option>
-            <option>Professional</option>
-            <option>Corporate</option>
-          </select>
+            <label>Status</label>
+            <select id="tStatus">
+              <option>Upcoming</option>
+              <option>Ongoing</option>
+              <option>Closed</option>
+            </select>
 
-          <label class="card-1">Fee (BDT)</label>
-          <input type="number">
+            <label>Instructor</label>
+            <input type="text" id="tInstructor" required>
 
-          <label class="card-1">Start Date</label>
-          <input type="date">
+            <label>Description</label>
+            <textarea id="tDesc" rows="3" required></textarea>
 
-          <label class="card-1">Deadline</label>
-          <input type="date">
+            <button class="btn" type="submit" id="saveTrainingBtn">Save Training</button>
+          </form>
 
-          <label class="card-1">Status</label>
-          <select>
-            <option>Upcoming</option>
-            <option>Ongoing</option>
-            <option>Closed</option>
-          </select>
+          <div class="card-info-1">
+            <h3>Training List</h3>
+            <div style="display: flex;">
+              <input type="search" id="trainingSearch" placeholder="Search training"
+                style="flex: 1; padding: 0.5rem; border-radius: 6px; border: 1px solid #ddd;">
+            </div>
 
-          <label class="card-1">Instructor</label>
-          <input type="text">
+            <table class="training-table">
+              <thead class="table-header">
+                <tr>
+                  <th>Title</th>
+                  <th>Code</th>
+                  <th>Fee</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="trainingTableBody" class="table-body">
+                <!-- Dynamic Rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
 
-          <label class="card-1">Description</label>
-          <textarea rows="3"></textarea>
+      <section id="offers" class="panel-1">
+        <div class="panel-header">
+          <h2>Offers & Discounts</h2>
+        </div>
 
-          <button class="btn" type="submit">Save</button>
-        </form>
+        <div class="card-info">
+          <form id="offerForm" class="offer-info-card">
+            <h3>Offer Form</h3>
+            <label>Offer Name</label>
+            <input type="text" id="oName" required placeholder="New Year Discount">
 
-        <div class="card-info-1">
-          <h3>Training List</h3>
-          <input type="search" placeholder="Search training">
-          <button class="search ">Search</button>
+            <label>Training</label>
+            <select id="oTraining" required>
+              <!-- Dynamic Options -->
+            </select>
 
-          <table class="training-table">
+            <label>Discount Type</label>
+            <select id="oType">
+              <option>Percentage</option>
+              <option>Fixed</option>
+            </select>
+
+            <label>Value</label>
+            <input type="number" id="oValue" required>
+
+            <label>Start Date</label>
+            <input type="date" id="oStartDate" required>
+
+            <label>End Date</label>
+            <input type="date" id="oEndDate" required>
+
+            <button class="btn" type="submit">Save Offer</button>
+          </form>
+
+          <div class="card-info-1">
+            <h3>Active Offers</h3>
+            <table class="training-table">
+              <thead class="table-header">
+                <tr>
+                  <th>Offer</th>
+                  <th>Training</th>
+                  <th>Value</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="offerTableBody" class="table-body">
+                <!-- Dynamic Rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="registrations" class="panel-2">
+        <div class="panel-header">
+          <h2>Registrations</h2>
+        </div>
+
+        <div class="card">
+          <table class="registration-table">
             <thead class="table-header">
-            <tr>
-              <th>Title</th>
-              <th>Code</th>
-              <th>Fee</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Training</th>
+                <th>Date</th>
+              </tr>
             </thead>
-
-            <tbody class="table-body">
-            <tr>
-              <td>Full Stack Bootcamp</td>
-              <td>TS-001</td>
-              <td>15,000</td>
-              <td>Upcoming</td>
-              <td>
-                <button class="btn">Edit</button>
-                <button class="btn">Delete</button>
-              </td>
-            </tr>
-
-            <tr>
-              <td>UI/UX Design</td>
-              <td>TS-002</td>
-              <td>12,000</td>
-              <td>Ongoing</td>
-              <td>
-                <button class="btn">Edit</button>
-                <button class="btn">Delete</button>
-              </td>
-            </tr>
+            <tbody id="regTableBody">
+              <!-- Dynamic Rows -->
             </tbody>
           </table>
         </div>
-      </div>
-    </section>
+      </section>
 
+      <footer>
+        <p>Dynamic Training Management System</p>
+        <p>© 2026 TechSimple ICT</p>
+      </footer>
+    </main>
+  </div>
 
-    <section id="offers" class="panel-1">
-      <div class="panel-header">
-        <h2>Offers & Discounts</h2>
-        <button class="btn">Create Offer</button>
-      </div>
+  <script src="js/data.js"></script>
+  <script src="js/logic.js"></script>
+  <script>
+    // State management for UI
+    const trainingForm = document.getElementById('trainingForm');
+    const offerForm = document.getElementById('offerForm');
 
-      <div class="offer-info-card">
-        <h3>Offer Form</h3>
+    function updateUI() {
+      const trainings = DataManager.getTrainings();
+      const offers = DataManager.getOffers();
+      const regs = DataManager.getRegistrations();
 
-        <label>Offer Name</label>
-        <input type="text" placeholder="New Year Discount">
+      // Update Stats
+      document.getElementById('statTrainings').textContent = trainings.length;
+      document.getElementById('statOffers').textContent = offers.length;
+      document.getElementById('statRegs').textContent = regs.length;
 
-        <label>Training</label>
-        <select>
-          <option>Full Stack Bootcamp</option>
-          <option>UI/UX Design</option>
-        </select>
+      // Render Training Table
+      const tBody = document.getElementById('trainingTableBody');
+      tBody.innerHTML = '';
+      trainings.forEach(t => {
+        tBody.innerHTML += `
+                <tr>
+                    <td>${t.title}</td>
+                    <td>${t.code}</td>
+                    <td>৳${t.fee.toLocaleString()}</td>
+                    <td>${t.status}</td>
+                    <td>
+                        <button class="btn" onclick="editTraining('${t.id}')">Edit</button>
+                        <button class="btn btn-delete" onclick="deleteTraining('${t.id}')">Delete</button>
+                    </td>
+                </tr>
+            `;
+      });
 
-        <label>Discount Type</label>
-        <select>
-          <option>Percentage</option>
-          <option>Fixed</option>
-        </select>
+      // Update Offer Select & Table
+      const oSelect = document.getElementById('oTraining');
+      const oBody = document.getElementById('offerTableBody');
+      oSelect.innerHTML = '';
+      oBody.innerHTML = '';
+      trainings.forEach(t => {
+        oSelect.innerHTML += `<option value="${t.id}">${t.title}</option>`;
+      });
+      offers.forEach(o => {
+        const tr = trainings.find(t => t.id === o.trainingId);
+        oBody.innerHTML += `
+                <tr>
+                    <td>${o.name}</td>
+                    <td>${tr ? tr.title : 'N/A'}</td>
+                    <td>${o.value}${o.discountType === 'Percentage' ? '%' : ' BDT'}</td>
+                    <td><button class="btn btn-delete" onclick="deleteOffer('${o.id}')">Remove</button></td>
+                </tr>
+            `;
+      });
 
-        <label>Value</label>
-        <input type="number">
+      // Render Registration Table
+      const rBody = document.getElementById('regTableBody');
+      rBody.innerHTML = '';
+      regs.reverse().forEach(r => {
+        rBody.innerHTML += `
+                <tr>
+                    <td>${r.name}</td>
+                    <td>${r.email}</td>
+                    <td>${r.trainingTitle}</td>
+                    <td>${LogicManager.getFormattedDate(r.date)}</td>
+                </tr>
+            `;
+      });
+    }
 
-        <label>Start Date</label>
-        <input type="date">
+    // Handlers
+    trainingForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const trainings = DataManager.getTrainings();
+      const editId = document.getElementById('editTrainingId').value;
 
-        <label>End Date</label>
-        <input type="date">
+      const newTraining = {
+        id: editId || 'ts-' + Math.random().toString(36).substr(2, 9),
+        title: document.getElementById('tTitle').value,
+        code: document.getElementById('tCode').value,
+        category: document.getElementById('tCategory').value,
+        fee: parseFloat(document.getElementById('tFee').value),
+        startDate: document.getElementById('tStartDate').value,
+        deadline: document.getElementById('tDeadline').value,
+        status: document.getElementById('tStatus').value,
+        instructor: document.getElementById('tInstructor').value,
+        description: document.getElementById('tDesc').value
+      };
 
-        <button class="btn">Save Offer</button>
-      </div>
-    </section>
+      if (editId) {
+        const index = trainings.findIndex(t => t.id === editId);
+        trainings[index] = newTraining;
+      } else {
+        trainings.push(newTraining);
+      }
 
-    <section id="registrations" class="panel-2">
-      <div class="panel-header">
-        <h2>Registrations</h2>
-        <button class="btn">Export CSV</button>
-      </div>
+      DataManager.saveTrainings(trainings);
+      trainingForm.reset();
+      document.getElementById('editTrainingId').value = '';
+      updateUI();
+    });
 
-      <div class="card">
-        <table class="registration-table">
-          <thead class="table-header">
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Training</th>
-            <th>Date</th>
-          </tr>
-          </thead>
+    offerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const offers = DataManager.getOffers();
+      const newOffer = {
+        id: 'offer-' + Math.random().toString(36).substr(2, 9),
+        name: document.getElementById('oName').value,
+        trainingId: document.getElementById('oTraining').value,
+        discountType: document.getElementById('oType').value,
+        value: parseFloat(document.getElementById('oValue').value),
+        startDate: document.getElementById('oStartDate').value,
+        endDate: document.getElementById('oEndDate').value
+      };
+      offers.push(newOffer);
+      DataManager.saveOffers(offers);
+      offerForm.reset();
+      updateUI();
+    });
 
-          <tbody>
-          <tr>
-            <td>Rahim</td>
-            <td>rahim@mail.com</td>
-            <td>Full Stack Bootcamp</td>
-            <td>05 Mar 2026</td>
-          </tr>
+    window.editTraining = (id) => {
+      const t = DataManager.getTrainings().find(t => t.id === id);
+      document.getElementById('editTrainingId').value = t.id;
+      document.getElementById('tTitle').value = t.title;
+      document.getElementById('tCode').value = t.code;
+      document.getElementById('tCategory').value = t.category;
+      document.getElementById('tFee').value = t.fee;
+      document.getElementById('tStartDate').value = t.startDate;
+      document.getElementById('tDeadline').value = t.deadline;
+      document.getElementById('tStatus').value = t.status;
+      document.getElementById('tInstructor').value = t.instructor;
+      document.getElementById('tDesc').value = t.description;
+      window.scrollTo(0, document.getElementById('training').offsetTop);
+    };
 
-          <tr>
-            <td>Sabina</td>
-            <td>sabina@mail.com</td>
-            <td>UI/UX Design</td>
-            <td>03 Feb 2026</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
+    window.deleteTraining = (id) => {
+      if (confirm('Delete this training?')) {
+        const trainings = DataManager.getTrainings().filter(t => t.id !== id);
+        DataManager.saveTrainings(trainings);
+        updateUI();
+      }
+    };
 
+    window.deleteOffer = (id) => {
+      const offers = DataManager.getOffers().filter(o => o.id !== id);
+      DataManager.saveOffers(offers);
+      updateUI();
+    };
 
-    <footer>
-      <p>Dynamic Training Management System</p>
-      <p>© 2026 TechSimple ICT</p>
-    </footer>
-
-  </main>
-</div>
+    updateUI();
+  </script>
 </body>
+
 </html>
