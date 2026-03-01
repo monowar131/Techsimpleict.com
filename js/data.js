@@ -1,101 +1,96 @@
-// Data structure for trainings and offers
-const initialTrainings = [
-    {
-        id: 'ts-001',
-        title: 'Full Stack Bootcamp',
-        code: 'TS-001',
-        category: 'Professional',
-        fee: 15000,
-        instructor: 'Dr. John Smith',
-        startDate: '2026-05-01',
-        deadline: '2026-04-20',
-        status: 'Upcoming',
-        description: 'Comprehensive boot camp covering frontend, backend, and DevOps.'
-    },
-    {
-        id: 'ts-002',
-        title: 'UI/UX Design Masterclass',
-        code: 'TS-002',
-        category: 'Certification',
-        fee: 12000,
-        instructor: 'Jane Doe',
-        startDate: '2026-06-15',
-        deadline: '2026-06-01',
-        status: 'Upcoming',
-        description: 'Master the art of user interface and experience design with modern tools.'
-    },
-    {
-        id: 'ts-003',
-        title: 'Cybersecurity Fundamentals',
-        code: 'TS-003',
-        category: 'Corporate',
-        fee: 20000,
-        instructor: 'Alice Johnson',
-        startDate: '2026-07-10',
-        deadline: '2026-06-25',
-        status: 'Upcoming',
-        description: 'Learn the essentials of cybersecurity and how to protect digital assets.'
-    }
-];
-
-const initialOffers = [
-    {
-        id: 'offer-001',
-        name: 'New Year Discount',
-        trainingId: 'ts-001',
-        discountType: 'Percentage',
-        value: 10,
-        startDate: '2026-01-01',
-        endDate: '2026-03-31'
-    }
-];
-
-// Utility functions
+// Data structure for trainings and offers (interacting with PHP APIs)
 const DataManager = {
-    getTrainings: () => {
-        const stored = localStorage.getItem('trainings');
-        return stored ? JSON.parse(stored) : initialTrainings;
+    getTrainings: async () => {
+        const response = await fetch('api/get_trainings.php');
+        return await response.json();
     },
-    saveTrainings: (trainings) => {
-        localStorage.setItem('trainings', JSON.stringify(trainings));
+    getTrainingDetails: async (id) => {
+        const response = await fetch(`api/get_training_details.php?id=${id}`);
+        return await response.json();
     },
-    getOffers: () => {
-        const stored = localStorage.getItem('offers');
-        return stored ? JSON.parse(stored) : initialOffers;
+    getClassifications: async () => {
+        const response = await fetch('api/get_classifications.php');
+        return await response.json();
     },
-    saveOffers: (offers) => {
-        localStorage.setItem('offers', JSON.stringify(offers));
+    saveRegistration: async (formData) => {
+        const response = await fetch('api/register.php', {
+            method: 'POST',
+            body: formData
+        });
+        return await response.json();
     },
-    getRegistrations: () => {
-        const stored = localStorage.getItem('registrations');
-        return stored ? JSON.parse(stored) : [];
-    },
-    saveRegistration: (registration) => {
-        const regs = DataManager.getRegistrations();
-        regs.push({ ...registration, date: new Date().toISOString().split('T')[0] });
-        localStorage.setItem('registrations', JSON.stringify(regs));
-    },
-    getAdminUsers: () => {
-        const stored = localStorage.getItem('adminUsers');
-        return stored ? JSON.parse(stored) : [];
-    },
-    saveAdminUser: (user) => {
-        const users = DataManager.getAdminUsers();
-        users.push(user);
-        localStorage.setItem('adminUsers', JSON.stringify(users));
-    },
-    updateAdminPassword: (email, newPassword) => {
-        const users = DataManager.getAdminUsers();
-        const index = users.findIndex(u => u.email === email);
-        if (index !== -1) {
-            users[index].password = newPassword;
-            localStorage.setItem('adminUsers', JSON.stringify(users));
-            return true;
+    // Admin functions
+    admin: {
+        login: async (username, password) => {
+            const formData = new FormData();
+            formData.append('username', username);
+            formData.append('password', password);
+            const response = await fetch('api/login.php', {
+                method: 'POST',
+                body: formData
+            });
+            return await response.json();
+        },
+        signup: async (email, password) => {
+            const formData = new FormData();
+            formData.append('email', email);
+            formData.append('password', password);
+            const response = await fetch('api/signup.php', {
+                method: 'POST',
+                body: formData
+            });
+            return await response.json();
+        },
+        forgotPassword: async (email, newPassword) => {
+            const formData = new FormData();
+            formData.append('email', email);
+            formData.append('new_password', newPassword);
+            const response = await fetch('api/reset_password.php', {
+                method: 'POST',
+                body: formData
+            });
+            return await response.json();
+        },
+        getTrainings: async () => {
+            const response = await fetch('api/admin/trainings.php');
+            return await response.json();
+        },
+        saveTraining: async (training) => {
+            const method = training.id ? 'PUT' : 'POST';
+            const response = await fetch('api/admin/trainings.php', {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(training)
+            });
+            return await response.json();
+        },
+        deleteTraining: async (id) => {
+            const response = await fetch(`api/admin/trainings.php?id=${id}`, {
+                method: 'DELETE'
+            });
+            return await response.json();
+        },
+        getOffers: async () => {
+            const response = await fetch('api/admin/offers.php');
+            return await response.json();
+        },
+        saveOffer: async (offer) => {
+            const response = await fetch('api/admin/offers.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(offer)
+            });
+            return await response.json();
+        },
+        deleteOffer: async (id) => {
+            const response = await fetch(`api/admin/offers.php?id=${id}`, {
+                method: 'DELETE'
+            });
+            return await response.json();
+        },
+        getRegistrations: async () => {
+            const response = await fetch('api/admin/registrations.php');
+            return await response.json();
         }
-        return false;
     }
 };
-
-// Initialize if empty
-if (!localStorage.getItem('trainings')) DataManager.saveTrainings(initialTrainings);
-if (!localStorage.getItem('offers')) DataManager.saveOffers(initialOffers);

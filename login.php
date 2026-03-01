@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password | TechSimple ICT</title>
+    <title>Admin Login | TechSimple ICT</title>
     <link rel="stylesheet" href="styles.css">
     <style>
         .login-container {
@@ -61,70 +61,61 @@
             display: none;
             border: 1px solid #fee2e2;
         }
-
-        .success-msg {
-            color: #166534;
-            background: #dcfce7;
-            padding: 0.75rem;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            margin-bottom: 1.5rem;
-            display: none;
-            border: 1px solid #bbfc7e;
-        }
     </style>
 </head>
 
 <body style="background: #f1f5f9;">
     <div class="login-container">
         <div class="login-header">
-            <h2>Recover Password</h2>
-            <p>Enter your Gmail to reset your password</p>
+            <h2>Admin Login</h2>
+            <p>Enter your credentials to manage trainings</p>
         </div>
 
-        <div id="errorMsg" class="error-msg">Email not found.</div>
-        <div id="successMsg" class="success-msg">Password reset successful! Redirecting...</div>
+        <div id="errorMsg" class="error-msg">Invalid username or password.</div>
 
-        <form id="recoverForm">
+        <form id="loginForm">
             <div class="form-group">
                 <label>Gmail</label>
                 <input type="email" id="email" placeholder="admin@gmail.com" required>
             </div>
             <div class="form-group">
-                <label>New Password</label>
-                <input type="password" id="newPassword" placeholder="••••••••" required>
+                <label>Password</label>
+                <input type="password" id="password" placeholder="••••••••" required>
             </div>
-            <button type="submit" class="btn" style="width: 100%; padding: 0.9rem; font-size: 1rem;">Reset
-                Password</button>
+            <div style="text-align: right; margin-bottom: 1.5rem;">
+                <a href="forgot-password.html" style="color: #3b82f6; font-size: 0.85rem; text-decoration: none;">Forgot
+                    Password?</a>
+            </div>
+            <button type="submit" class="btn" style="width: 100%; padding: 0.9rem; font-size: 1rem;">Sign In</button>
         </form>
 
         <div style="text-align: center; margin-top: 1.5rem;">
-            <a href="login.html" style="color: #64748b; font-size: 0.85rem; text-decoration: none;">← Back to Login</a>
+            <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 0.5rem;">Don't have an account? <a
+                    href="signup.html" style="color: #10b981; text-decoration: none; font-weight: 600;">Sign Up</a></p>
+            <a href="trainings.html" style="color: #64748b; font-size: 0.85rem; text-decoration: none;">← Back to
+                Trainings</a>
         </div>
     </div>
 
     <script src="js/data.js"></script>
     <script>
-        const form = document.getElementById('recoverForm');
+        const form = document.getElementById('loginForm');
         const errorMsg = document.getElementById('errorMsg');
-        const successMsg = document.getElementById('successMsg');
 
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
-            const newPassword = document.getElementById('newPassword').value;
+            const password = document.getElementById('password').value;
 
-            const success = DataManager.updateAdminPassword(email, newPassword);
+            const result = await DataManager.admin.login(email, password);
 
-            if (success) {
-                successMsg.style.display = 'block';
-                errorMsg.style.display = 'none';
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 2000);
+            if (result.success) {
+                // We use session cookies now, so sessionStorage is optional but can be kept for frontend logic
+                sessionStorage.setItem('isAdminAuthenticated', 'true');
+                window.location.href = 'index.php';
             } else {
+                errorMsg.textContent = result.error || 'Invalid credentials';
                 errorMsg.style.display = 'block';
-                successMsg.style.display = 'none';
             }
         });
     </script>

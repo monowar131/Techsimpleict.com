@@ -108,31 +108,38 @@
         const form = document.getElementById('regForm');
         const titleEl = document.getElementById('trainingTitle');
 
-        const training = DataManager.getTrainings().find(t => t.id === tId);
+        let currentTraining = null;
 
-        if (!training || !LogicManager.isRegistrationOpen(training)) {
-            alert('Registration is closed for this program or it does not exist.');
-            window.location.href = 'trainings.html';
-        } else {
-            titleEl.textContent = `Registering for: ${training.title}`;
-            document.getElementById('trainingId').value = tId;
+        async function init() {
+            currentTraining = await DataManager.getTrainingDetails(tId);
+
+            if (!currentTraining || currentTraining.error || !LogicManager.isRegistrationOpen(currentTraining)) {
+                alert('Registration is closed for this program or it does not exist.');
+                window.location.href = 'trainings.php';
+            } else {
+                titleEl.textContent = `Registering for: ${currentTraining.title}`;
+                document.getElementById('trainingId').value = tId;
+            }
         }
 
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const registration = {
-                trainingId: tId,
-                trainingTitle: training.title,
-                name: document.getElementById('fullName').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                occupation: document.getElementById('occupation').value
-            };
+            const formData = new FormData();
+            formData.append('training_id', tId);
+            formData.append('full_name', document.getElementById('fullName').value);
+            formData.append('email', document.getElementById('email').value);
+            formData.append('phone', document.getElementById('phone').value);
 
-            DataManager.saveRegistration(registration);
-            document.getElementById('successOverlay').style.display = 'flex';
+            const result = await DataManager.saveRegistration(formData);
+            if (result.success) {
+                document.getElementById('successOverlay').style.display = 'flex';
+            } else {
+                alert('Error: ' + result.error);
+            }
         });
+
+        init();
     </script>
 </body>
 

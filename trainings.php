@@ -144,9 +144,8 @@
         const grid = document.getElementById('trainingGrid');
         const filter = document.getElementById('categoryFilter');
 
-        function renderTrainings() {
-            const trainings = DataManager.getTrainings();
-            const offers = DataManager.getOffers();
+        async function renderTrainings() {
+            const trainings = await DataManager.getTrainings();
             const selectedCategory = filter.value;
 
             grid.innerHTML = '';
@@ -154,8 +153,8 @@
             trainings
                 .filter(t => selectedCategory === 'All' || t.category === selectedCategory)
                 .forEach(t => {
-                    const finalPrice = LogicManager.calculatePrice(t, offers);
-                    const hasOffer = finalPrice < t.fee;
+                    const finalPrice = LogicManager.calculatePrice(t);
+                    const hasOffer = finalPrice < parseFloat(t.price);
 
                     const card = `
                         <div class="training-card">
@@ -166,12 +165,12 @@
                                 <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1rem; height: 3.6rem; overflow: hidden;">${t.description}</p>
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
                                     <div>
-                                        ${hasOffer ? `<span class="old-price">৳${t.fee.toLocaleString()}</span>` : ''}
+                                        ${hasOffer ? `<span class="old-price">৳${parseFloat(t.price).toLocaleString()}</span>` : ''}
                                         <span class="price">৳${finalPrice.toLocaleString()}</span>
                                     </div>
                                     <span style="font-size: 0.8rem; color: #94a3b8;">Deadline: ${LogicManager.getFormattedDate(t.deadline)}</span>
                                 </div>
-                                <a href="training-detail.html?id=${t.id}" class="btn" style="width: 100%; text-align: center; text-decoration: none;">View Details</a>
+                                <a href="training-detail.php?id=${t.id}" class="btn" style="width: 100%; text-align: center; text-decoration: none;">View Details</a>
                             </div>
                         </div>
                     `;

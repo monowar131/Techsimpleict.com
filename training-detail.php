@@ -25,17 +25,15 @@
         const trainingId = urlParams.get('id');
         const detailView = document.getElementById('detailView');
 
-        function renderDetails() {
-            const trainings = DataManager.getTrainings();
-            const offers = DataManager.getOffers();
-            const training = trainings.find(t => t.id === trainingId);
+        async function renderDetails() {
+            const training = await DataManager.getTrainingDetails(trainingId);
 
-            if (!training) {
+            if (!training || training.error) {
                 detailView.innerHTML = '<h1>Training not found</h1>';
                 return;
             }
 
-            const finalPrice = LogicManager.calculatePrice(training, offers);
+            const finalPrice = LogicManager.calculatePrice(training);
             const isOpen = LogicManager.isRegistrationOpen(training);
 
             detailView.innerHTML = `
@@ -52,11 +50,11 @@
                     </div>
                     <div>
                         <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 0.25rem;">Start Date</p>
-                        <p style="font-weight: 600; color: #1e293b;">${LogicManager.getFormattedDate(training.startDate)}</p>
+                        <p style="font-weight: 600; color: #1e293b;">${LogicManager.getFormattedDate(training.created_at)}</p>
                     </div>
                     <div>
                         <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 0.25rem;">Program Fee</p>
-                        <p style="font-weight: 700; color: #10b981; font-size: 1.5rem;">৳${finalPrice.toLocaleString()} ${finalPrice < training.fee ? `<small style="text-decoration: line-through; color: #94a3b8; font-size: 1rem;">৳${training.fee.toLocaleString()}</small>` : ''}</p>
+                        <p style="font-weight: 700; color: #10b981; font-size: 1.5rem;">৳${finalPrice.toLocaleString()} ${finalPrice < parseFloat(training.price) ? `<small style="text-decoration: line-through; color: #94a3b8; font-size: 1rem;">৳${parseFloat(training.price).toLocaleString()}</small>` : ''}</p>
                     </div>
                     <div>
                         <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 0.25rem;">Registration Deadline</p>
@@ -65,7 +63,7 @@
                 </div>
 
                 ${isOpen ?
-                    `<a href="register.html?id=${training.id}" class="btn" style="padding: 1rem 2rem; font-size: 1.1rem; text-decoration: none; text-align: center; display: block;">Proceed to Registration</a>` :
+                    `<a href="register.php?id=${training.id}" class="btn" style="padding: 1rem 2rem; font-size: 1.1rem; text-decoration: none; text-align: center; display: block;">Proceed to Registration</a>` :
                     `<button class="btn" disabled style="padding: 1rem 2rem; font-size: 1.1rem; background: #94a3b8; width: 100%;">Registration Closed</button>`
                 }
             `;

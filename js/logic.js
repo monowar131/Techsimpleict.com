@@ -1,25 +1,20 @@
 // Logic for price calculations and validations
 const LogicManager = {
-    calculatePrice: (training, offers) => {
-        const now = new Date().toISOString().split('T')[0];
-        const activeOffer = offers.find(o =>
-            o.trainingId === training.id &&
-            now >= o.startDate &&
-            now <= o.endDate
-        );
+    calculatePrice: (training) => {
+        const fee = parseFloat(training.price);
+        if (!training.discount_value) return fee;
 
-        if (!activeOffer) return training.fee;
-
-        if (activeOffer.discountType === 'Percentage') {
-            return training.fee * (1 - activeOffer.value / 100);
+        if (training.discount_type === 'percentage') {
+            return fee * (1 - parseFloat(training.discount_value) / 100);
         } else {
-            return Math.max(0, training.fee - activeOffer.value);
+            return Math.max(0, fee - parseFloat(training.discount_value));
         }
     },
 
     isRegistrationOpen: (training) => {
-        const now = new Date().toISOString().split('T')[0];
-        return now <= training.deadline;
+        const now = new Date();
+        const deadline = new Date(training.deadline);
+        return now <= deadline;
     },
 
     getFormattedDate: (dateStr) => {

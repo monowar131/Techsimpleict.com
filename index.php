@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (!isset($_SESSION['admin_id'])) {
+    header('Location: login.php');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,14 +23,9 @@
     }
   </style>
   <script>
-    // Simple authentication check
-    if (sessionStorage.getItem('isAdminAuthenticated') !== 'true') {
-      window.location.href = 'login.html';
-    }
-
-    function logout() {
-      sessionStorage.removeItem('isAdminAuthenticated');
-      window.location.href = 'login.html';
+    async function logout() {
+      // Simple logout by redirecting to a logout script or just clearing session on server
+      window.location.href = 'api/logout.php';
     }
   </script>
 </head>
@@ -225,15 +227,23 @@
     const trainingForm = document.getElementById('trainingForm');
     const offerForm = document.getElementById('offerForm');
 
-    function updateUI() {
-      const trainings = DataManager.getTrainings();
-      const offers = DataManager.getOffers();
-      const regs = DataManager.getRegistrations();
+    async function updateUI() {
+      const trainings = await DataManager.admin.getTrainings();
+      const offers = await DataManager.admin.getOffers();
+      const regs = await DataManager.admin.getRegistrations();
+      const cats = await DataManager.getClassifications();
 
       // Update Stats
       document.getElementById('statTrainings').textContent = trainings.length;
       document.getElementById('statOffers').textContent = offers.length;
       document.getElementById('statRegs').textContent = regs.length;
+
+      // Update Category Select
+      const tCat = document.getElementById('tCategory');
+      tCat.innerHTML = '';
+      cats.forEach(c => {
+        tCat.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+      });
 
       // Render Training Table
       const tBody = document.getElementById('trainingTableBody');
@@ -242,9 +252,9 @@
         tBody.innerHTML += `
                 <tr>
                     <td>${t.title}</td>
-                    <td>${t.code}</td>
-                    <td>৳${t.fee.toLocaleString()}</td>
-                    <td>${t.status}</td>
+                    <td>${t.code || 'N/A'}</td>
+                    <td>৳${parseFloat(t.price).toLocaleString()}</td>
+                    <td>${t.status || 'Active'}</td>
                     <td>
                         <button class="btn" onclick="editTraining('${t.id}')">Edit</button>
                         <button class="btn btn-delete" onclick="deleteTraining('${t.id}')">Delete</button>
@@ -262,12 +272,11 @@
         oSelect.innerHTML += `<option value="${t.id}">${t.title}</option>`;
       });
       offers.forEach(o => {
-        const tr = trainings.find(t => t.id === o.trainingId);
         oBody.innerHTML += `
                 <tr>
-                    <td>${o.name}</td>
-                    <td>${tr ? tr.title : 'N/A'}</td>
-                    <td>${o.value}${o.discountType === 'Percentage' ? '%' : ' BDT'}</td>
+                    <td>${o.offer_name || 'Offer'}</td>
+                    <td>${o.training_title}</td>
+                    <td>${o.discount_value}${o.discount_type === 'percentage' ? '%' : ' BDT'}</td>
                     <td><button class="btn btn-delete" onclick="deleteOffer('${o.id}')">Remove</button></td>
                 </tr>
             `;
@@ -276,94 +285,76 @@
       // Render Registration Table
       const rBody = document.getElementById('regTableBody');
       rBody.innerHTML = '';
-      regs.reverse().forEach(r => {
+      regs.forEach(r => {
         rBody.innerHTML += `
                 <tr>
-                    <td>${r.name}</td>
+                    <td>${r.full_name}</td>
                     <td>${r.email}</td>
-                    <td>${r.trainingTitle}</td>
-                    <td>${LogicManager.getFormattedDate(r.date)}</td>
+                    <td>${r.training_title}</td>
+                    <td>${LogicManager.getFormattedDate(r.registration_date)}</td>
                 </tr>
             `;
       });
     }
 
     // Handlers
-    trainingForm.addEventListener('submit', (e) => {
+    trainingForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const trainings = DataManager.getTrainings();
       const editId = document.getElementById('editTrainingId').value;
 
       const newTraining = {
-        id: editId || 'ts-' + Math.random().toString(36).substr(2, 9),
+        id: editId || null,
         title: document.getElementById('tTitle').value,
-        code: document.getElementById('tCode').value,
-        category: document.getElementById('tCategory').value,
-        fee: parseFloat(document.getElementById('tFee').value),
-        startDate: document.getElementById('tStartDate').value,
-        deadline: document.getElementById('tDeadline').value,
-        status: document.getElementById('tStatus').value,
+        price: parseFloat(document.getElementById('tFee').value),
         instructor: document.getElementById('tInstructor').value,
-        description: document.getElementById('tDesc').value
+        description: document.getElementById('tDesc').value,
+        classification_id: document.getElementById('tCategory').value,
+        deadline: document.getElementById('tDeadline').value,
+        schedule: 'N/A' // Default for now
       };
 
-      if (editId) {
-        const index = trainings.findIndex(t => t.id === editId);
-        trainings[index] = newTraining;
-      } else {
-        trainings.push(newTraining);
-      }
-
-      DataManager.saveTrainings(trainings);
+      await DataManager.admin.saveTraining(newTraining);
       trainingForm.reset();
       document.getElementById('editTrainingId').value = '';
       updateUI();
     });
 
-    offerForm.addEventListener('submit', (e) => {
+    offerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const offers = DataManager.getOffers();
       const newOffer = {
-        id: 'offer-' + Math.random().toString(36).substr(2, 9),
-        name: document.getElementById('oName').value,
-        trainingId: document.getElementById('oTraining').value,
-        discountType: document.getElementById('oType').value,
-        value: parseFloat(document.getElementById('oValue').value),
-        startDate: document.getElementById('oStartDate').value,
-        endDate: document.getElementById('oEndDate').value
+        training_id: document.getElementById('oTraining').value,
+        discount_type: document.getElementById('oType').value.toLowerCase(),
+        discount_value: parseFloat(document.getElementById('oValue').value),
+        start_date: document.getElementById('oStartDate').value,
+        end_date: document.getElementById('oEndDate').value
       };
-      offers.push(newOffer);
-      DataManager.saveOffers(offers);
+      await DataManager.admin.saveOffer(newOffer);
       offerForm.reset();
       updateUI();
     });
 
-    window.editTraining = (id) => {
-      const t = DataManager.getTrainings().find(t => t.id === id);
+    window.editTraining = async (id) => {
+      const trainings = await DataManager.admin.getTrainings();
+      const t = trainings.find(t => t.id == id);
       document.getElementById('editTrainingId').value = t.id;
       document.getElementById('tTitle').value = t.title;
-      document.getElementById('tCode').value = t.code;
-      document.getElementById('tCategory').value = t.category;
-      document.getElementById('tFee').value = t.fee;
-      document.getElementById('tStartDate').value = t.startDate;
-      document.getElementById('tDeadline').value = t.deadline;
-      document.getElementById('tStatus').value = t.status;
+      document.getElementById('tFee').value = t.price;
       document.getElementById('tInstructor').value = t.instructor;
       document.getElementById('tDesc').value = t.description;
+      document.getElementById('tCategory').value = t.classification_id;
+      document.getElementById('tDeadline').value = t.deadline.split(' ')[0];
       window.scrollTo(0, document.getElementById('training').offsetTop);
     };
 
-    window.deleteTraining = (id) => {
+    window.deleteTraining = async (id) => {
       if (confirm('Delete this training?')) {
-        const trainings = DataManager.getTrainings().filter(t => t.id !== id);
-        DataManager.saveTrainings(trainings);
+        await DataManager.admin.deleteTraining(id);
         updateUI();
       }
     };
 
-    window.deleteOffer = (id) => {
-      const offers = DataManager.getOffers().filter(o => o.id !== id);
-      DataManager.saveOffers(offers);
+    window.deleteOffer = async (id) => {
+      await DataManager.admin.deleteOffer(id);
       updateUI();
     };
 
