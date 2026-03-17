@@ -99,7 +99,7 @@
         </form>
 
         <div style="text-align: center; margin-top: 1.5rem;">
-            <a href="login.html" style="color: #64748b; font-size: 0.85rem; text-decoration: none;">← Back to Login</a>
+            <a href="login.php" style="color: #64748b; font-size: 0.85rem; text-decoration: none;">← Back to Login</a>
         </div>
     </div>
 

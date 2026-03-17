@@ -1,0 +1,24 @@
+# === Sensitive Files (NEVER push to GitHub) ===
+api/db.php
+
+# === Environment / Config ===
+.env
+*.env
+
+# === OS Junk ===
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === Editor Junk ===
+.vscode/
+.idea/
+*.suo
+*.user
+
+# === Logs ===
+*.log
+error_log
+
+# === Node (if ever used) ===
+node_modules/

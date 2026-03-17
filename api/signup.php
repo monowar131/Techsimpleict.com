@@ -15,7 +15,7 @@ if (!$email || !$password) {
     exit;
 }
 
-if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !str_ends_with($email, '@gmail.com')) {
+if (!filter_var($email, FILTER_VALIDATE_EMAIL) || substr($email, -10) !== '@gmail.com') {
     echo json_encode(['error' => 'Please use a valid Gmail address']);
     exit;
 }

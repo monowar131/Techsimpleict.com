@@ -10,11 +10,11 @@
 
 <body style="background: #f8fafc; padding: 0;">
     <nav style="background: #1e293b; padding: 1rem 2rem; color: white;">
-        <h1><a href="trainings.html" style="color: white; text-decoration: none;">TechSimple ICT</a></h1>
+        <h1><a href="trainings.php" style="color: white; text-decoration: none;">TechSimple ICT</a></h1>
     </nav>
 
     <main id="detailView"
-        style="max-width: 800px; margin: 4rem auto; padding: 2rem; background: white; border-radius: 15px; shadow: 0 4px 20px rgba(0,0,0,0.08);">
+        style="max-width: 800px; margin: 4rem auto; padding: 2rem; background: white; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
         <!-- Dynamic Content -->
     </main>
 

@@ -40,7 +40,7 @@ if (!isset($_SESSION['admin_id'])) {
         <a href="#offers">Offers</a>
         <a href="#registrations">Registrations</a>
         <a href="javascript:void(0)" onclick="logout()" style="margin-top: 1rem; color: #ef4444;">Logout</a>
-        <a href="trainings.html" style="margin-top: 2rem; border: 1px solid #10b981;">View Frontend</a>
+        <a href="trainings.php" style="margin-top: 2rem; border: 1px solid #10b981;">View Frontend</a>
       </nav>
     </div>
 
@@ -196,7 +196,7 @@ if (!isset($_SESSION['admin_id'])) {
           <h2>Registrations</h2>
         </div>
 
-        <div class="card"></div>
+        <div class="card">
           <table class="registration-table">
             <thead class="table-header">
               <tr>

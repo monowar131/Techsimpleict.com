@@ -55,7 +55,7 @@
 
 <body style="background: #f8fafc; padding: 0;">
     <nav style="background: #1e293b; padding: 1rem 2rem; color: white;">
-        <h1><a href="trainings.html" style="color: white; text-decoration: none;">TechSimple ICT</a></h1>
+        <h1><a href="trainings.php" style="color: white; text-decoration: none;">TechSimple ICT</a></h1>
     </nav>
 
     <div class="reg-container">
@@ -97,7 +97,7 @@
         <h2 style="font-size: 2rem; color: #1e293b;">Registration Successful!</h2>
         <p style="color: #64748b; margin-bottom: 2rem;">You have been registered for the program. We will contact you
             soon.</p>
-        <a href="trainings.html" class="btn">Back to Trainings</a>
+        <a href="trainings.php" class="btn">Back to Trainings</a>
     </div>
 
     <script src="js/data.js"></script>

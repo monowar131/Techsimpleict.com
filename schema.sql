@@ -1,7 +1,6 @@
 -- Database Schema for Training Management System
 
-CREATE DATABASE IF NOT EXISTS training_db;
-USE training_db;
+-- Database created in InfinityFree vPanel. Do not include CREATE DATABASE statements here.
 
 -- 1. Classification Table
 CREATE TABLE IF NOT EXISTS classifications (

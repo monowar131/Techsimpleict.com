@@ -1,24 +1,25 @@
 <?php
+session_start();
 header('Content-Type: application/json');
 require_once 'db.php';
-session_start();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['error' => 'Invalid request method']);
     exit;
 }
 
-$username = $_POST['username'] ?? null;
+$username = trim($_POST['username'] ?? '');
 $password = $_POST['password'] ?? null;
 
 if (!$username || !$password) {
-    echo json_encode(['error' => 'Username and password required']);
+    echo json_encode(['error' => 'Username/email and password required']);
     exit;
 }
 
 try {
-    $stmt = $pdo->prepare("SELECT * FROM admins WHERE username = ?");
-    $stmt->execute([$username]);
+    // Allow login by email OR username
+    $stmt = $pdo->prepare("SELECT * FROM admins WHERE username = ? OR email = ?");
+    $stmt->execute([$username, $username]);
     $admin = $stmt->fetch();
 
     if ($admin && password_verify($password, $admin['password_hash'])) {

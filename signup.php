@@ -86,7 +86,7 @@
         </form>
 
         <div style="text-align: center; margin-top: 1.5rem;">
-            <a href="login.html" style="color: #64748b; font-size: 0.85rem; text-decoration: none;">Already have an
+            <a href="login.php" style="color: #64748b; font-size: 0.85rem; text-decoration: none;">Already have an
                 account? Login</a>
         </div>
     </div>

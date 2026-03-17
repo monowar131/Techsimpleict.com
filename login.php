@@ -83,7 +83,7 @@
                 <input type="password" id="password" placeholder="••••••••" required>
             </div>
             <div style="text-align: right; margin-bottom: 1.5rem;">
-                <a href="forgot-password.html" style="color: #3b82f6; font-size: 0.85rem; text-decoration: none;">Forgot
+                <a href="forgot-password.php" style="color: #3b82f6; font-size: 0.85rem; text-decoration: none;">Forgot
                     Password?</a>
             </div>
             <button type="submit" class="btn" style="width: 100%; padding: 0.9rem; font-size: 1rem;">Sign In</button>
@@ -91,8 +91,8 @@
 
         <div style="text-align: center; margin-top: 1.5rem;">
             <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 0.5rem;">Don't have an account? <a
-                    href="signup.html" style="color: #10b981; text-decoration: none; font-weight: 600;">Sign Up</a></p>
-            <a href="trainings.html" style="color: #64748b; font-size: 0.85rem; text-decoration: none;">← Back to
+                    href="signup.php" style="color: #10b981; text-decoration: none; font-weight: 600;">Sign Up</a></p>
+            <a href="trainings.php" style="color: #64748b; font-size: 0.85rem; text-decoration: none;">← Back to
                 Trainings</a>
         </div>
     </div>

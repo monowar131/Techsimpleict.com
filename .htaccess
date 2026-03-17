@@ -1,0 +1,30 @@
+# Protect sensitive files and directories
+
+# Block direct access to API directory browsing
+Options -Indexes
+
+# Prevent direct access to PHP config files
+<Files "db.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+<Files "db.example.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Prevent access to schema and seeder files
+<Files "schema.sql">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+<Files "seed_admin.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Custom error pages
+ErrorDocument 403 /trainings.php
+ErrorDocument 404 /trainings.php

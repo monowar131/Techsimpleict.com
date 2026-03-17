@@ -7,7 +7,7 @@ if (!isset($_GET['id'])) {
     exit;
 }
 
-$id = $_GET['id'];
+$id = (int) $_GET['id'];
 
 try {
     $stmt = $pdo->prepare("
