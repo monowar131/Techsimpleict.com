@@ -1,5 +1,7 @@
-# Protect sensitive files and directories
+# Set the default homepage to the public frontend
+DirectoryIndex trainings.php index.php
 
+# Protect sensitive files and directories
 # Block direct access to API directory browsing
 Options -Indexes
 

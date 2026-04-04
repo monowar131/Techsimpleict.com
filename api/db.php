@@ -1,8 +1,20 @@
 <?php
-$host = 'localhost';
-$db   = 'training_db';
-$user = 'root';
-$pass = '';
+// Auto-detect environment: Use local credentials if testing on your computer, else use InfinityFree online
+$serverName = $_SERVER['SERVER_NAME'] ?? '';
+if ($serverName === 'localhost' || $serverName === '127.0.0.1' || php_sapi_name() === 'cli') {
+    // Local XAMPP Credentials
+    $host = 'localhost';
+    $db   = 'training'; // Make sure this database exists in your local phpMyAdmin
+    $user = 'root';
+    $pass = '';
+} else {
+    // InfinityFree Credentials
+    $host = 'sql101.infinityfree.com'; // IMPORTANT: Put your actual "MySQL Host Name" here (e.g. sql123.infinityfree.com)
+    $db   = 'if0_41355285_training';
+    $user = 'if0_41355285';
+    $pass = 'Monowar131@';
+}
+
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";

@@ -111,8 +111,10 @@
     <nav class="user-nav">
         <h1>TechSimple ICT</h1>
         <div>
-            <a href="trainings.php">Trainings</a>
-            <a href="index.php">Admin</a>
+            <a href="trainings.php">View Frontend</a>
+            <a href="login.php">Login / Sign In</a>
+            <a href="signup.php">Sign Up</a>
+            <a href="index.php">Admin Panel</a>
         </div>
     </nav>
 
