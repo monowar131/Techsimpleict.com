@@ -10,7 +10,7 @@
 
 <body style="background: #f8fafc; padding: 0;">
     <nav style="background: #1e293b; padding: 1rem 2rem; color: white;">
-        <h1><a href="trainings.php" style="color: white; text-decoration: none;">TechSimple ICT</a></h1>
+        <h1><a href="index.php" style="color: white; text-decoration: none;">TechSimple ICT</a></h1>
     </nav>
 
     <main id="detailView"

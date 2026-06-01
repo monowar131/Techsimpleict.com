@@ -92,7 +92,7 @@
         <div style="text-align: center; margin-top: 1.5rem;">
             <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 0.5rem;">Don't have an account? <a
                     href="signup.php" style="color: #10b981; text-decoration: none; font-weight: 600;">Sign Up</a></p>
-            <a href="trainings.php" style="color: #64748b; font-size: 0.85rem; text-decoration: none;">← Back to
+            <a href="index.php" style="color: #64748b; font-size: 0.85rem; text-decoration: none;">← Back to
                 Trainings</a>
         </div>
     </div>
@@ -112,7 +112,7 @@
             if (result.success) {
                 // We use session cookies now, so sessionStorage is optional but can be kept for frontend logic
                 sessionStorage.setItem('isAdminAuthenticated', 'true');
-                window.location.href = 'index.php';
+                window.location.href = 'admin_panel.php';
             } else {
                 errorMsg.textContent = result.error || 'Invalid credentials';
                 errorMsg.style.display = 'block';
